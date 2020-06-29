@@ -175,7 +175,7 @@ impl sock::SetSockOpt for ProtoMulticastIfIndex {
     type Val = u32;
 
     fn set(&self, fd: RawFd, val: &Self::Val) -> nix::Result<()> {
-        let mut req: libc::ip_mreqn = unsafe { mem::zeroed() };
+        let mut req: ip_mreqn = unsafe { mem::zeroed() };
         req.imr_ifindex = *val as i32;
         let result = unsafe {
             libc::setsockopt(
@@ -188,4 +188,13 @@ impl sock::SetSockOpt for ProtoMulticastIfIndex {
         };
         nix::errno::Errno::result(result).map(drop)
     }
+}
+
+/// Port from libc
+/// Because it is not defined on macos
+#[allow(non_camel_case_types)]
+struct ip_mreqn {
+    pub imr_multiaddr: libc::in_addr,
+    pub imr_address: libc::in_addr,
+    pub imr_ifindex: libc::c_int,
 }
