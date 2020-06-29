@@ -1,0 +1,28 @@
+[package]
+name = 'multicast-socket'
+description = 'Single-socket multi-interface multicast socket'
+version = '0.1.0'
+authors = ['Bruno Tavares <connect+github@bltavares.com>']
+edition = '2018'
+homepage = 'https://github.com/bltavares/multicast-socket'
+repository = 'https://github.com/bltavares/multicast-socket'
+readme = 'README.md'
+license = 'MIT OR Apache-2.0'
+keywords = ['multicast']
+
+[dependencies]
+get_if_addrs = '0.5.3'
+
+[dependencies.socket2]
+version = '0.3.12'
+features = ['reuseport']
+
+[target."cfg(windows)".dependencies.winapi]
+version = '0.3.9'
+features = ['mswsock']
+
+[target."cfg(not(windows))".dependencies.nix]
+version = '0.17.0'
+
+[target."cfg(not(windows))".dependencies.libc]
+version = '0.2.71'
