@@ -48,7 +48,7 @@ fn create_on_interfaces(
     socket.bind(&SocketAddr::from(multicast_address).into())?;
     // Otherwhise we bind to 0.0.0.0
     #[cfg(not(any(target_os = "linux", target_os = "android")))]
-    socket.bind(&SocketAddr::from(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), 5353)).into())?;
+    socket.bind(&SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), multicast_address.port()).into())?;
 
     Ok(MulticastSocket {
         socket,
