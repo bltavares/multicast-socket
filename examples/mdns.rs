@@ -1,9 +1,8 @@
-use std::net::{Ipv4Addr, SocketAddrV4};
-
 use multicast_socket::MulticastSocket;
+use std::net::SocketAddrV4;
 
 fn main() {
-    let mdns_multicast_address = SocketAddrV4::new(Ipv4Addr::new(224, 0, 0, 251).into(), 5353);
+    let mdns_multicast_address = SocketAddrV4::new([224, 0, 0, 251].into(), 5353);
     let socket = MulticastSocket::all_interfaces(mdns_multicast_address)
         .expect("could not create and bind socket");
 

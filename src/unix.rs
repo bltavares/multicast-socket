@@ -1,18 +1,13 @@
 use std::io;
 use std::mem;
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
-use std::os::unix::io::{AsRawFd, RawFd};
+use std::os::unix::io::AsRawFd;
 use std::time::Duration;
 
 use socket2::{Domain, Protocol, Socket, Type};
 
 use nix::sys::socket as sock;
 use nix::sys::uio::IoVec;
-
-/// On unixes we bind to the multicast address, which causes multicast packets to be filtered
-fn bind_multicast(socket: &Socket, addr: &SocketAddr) -> io::Result<()> {
-    socket.bind(&socket2::SockAddr::from(*addr))
-}
 
 pub struct MulticastOptions {
     pub read_timeout: Duration,
@@ -48,7 +43,12 @@ fn create_on_interfaces(
         socket.join_multicast_v4(multicast_address.ip(), &interface)?;
     }
 
-    bind_multicast(&socket, &multicast_address.into())?;
+    // On Linux we bind to the multicast address, which causes multicast packets to be filtered
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    socket.bind(&SocketAddr::from(multicast_address).into())?;
+    // Otherwhise we bind to 0.0.0.0
+    #[cfg(not(any(target_os = "linux", target_os = "android")))]
+    socket.bind(&SocketAddr::from(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), 5353)).into())?;
 
     Ok(MulticastSocket {
         socket,
@@ -69,7 +69,7 @@ pub struct MulticastSocket {
 pub enum Interface {
     Default,
     Ip(Ipv4Addr),
-    Index(u32),
+    Index(i32),
 }
 
 #[derive(Debug)]
@@ -79,15 +79,50 @@ pub struct Message {
     pub interface: Interface,
 }
 
+/// The crate `get_if_addrs` is reading the bytes of sockets on the wrong endianess on MIPS
+/// So the adresses are reversed...
+/// The crate `get_if_addrs` is archived and I don't have bandwidth to fork it
+/// So this is a hotfix
+#[cfg(target_arch = "mips")]
+fn reverse_interface(interface: get_if_addrs::Interface) -> get_if_addrs::Interface {
+    get_if_addrs::Interface {
+        name: interface.name,
+        addr: match interface.addr {
+            get_if_addrs::IfAddr::V4(v4) => {
+                let reversed = get_if_addrs::Ifv4Addr {
+                    ip: reverse_address(v4.ip),
+                    netmask: reverse_address(v4.netmask),
+                    broadcast: v4.broadcast.map(reverse_address),
+                };
+                get_if_addrs::IfAddr::V4(reversed)
+            }
+            addr => addr,
+        },
+    }
+}
+
+#[cfg(target_arch = "mips")]
+fn reverse_address(v4: Ipv4Addr) -> Ipv4Addr {
+    let mut octets = v4.octets();
+    octets.reverse();
+    octets.into()
+}
+
 pub fn all_ipv4_interfaces() -> io::Result<Vec<Ipv4Addr>> {
+    #[cfg(not(target_arch = "mips"))]
+    let interfaces = get_if_addrs::get_if_addrs()?.into_iter();
+    #[cfg(target_arch = "mips")]
     let interfaces = get_if_addrs::get_if_addrs()?
         .into_iter()
+        .map(reverse_interface);
+
+    let ipv4_interfaces = interfaces
         .filter_map(|i| match i.ip() {
-            std::net::IpAddr::V4(v4) => Some(v4),
+            std::net::IpAddr::V4(v4) if !i.is_loopback() => Some(v4),
             _ => None,
         })
         .collect();
-    Ok(interfaces)
+    Ok(ipv4_interfaces)
 }
 
 impl MulticastSocket {
@@ -135,7 +170,7 @@ impl MulticastSocket {
 
         for cmsg in message.cmsgs() {
             if let sock::ControlMessageOwned::Ipv4PacketInfo(pktinfo) = cmsg {
-                interface = Interface::Index(pktinfo.ipi_ifindex as u32);
+                interface = Interface::Index(pktinfo.ipi_ifindex as _);
             }
         }
 
@@ -147,17 +182,24 @@ impl MulticastSocket {
     }
 
     pub fn send(&self, buf: &[u8], interface: &Interface) -> io::Result<usize> {
+        let mut pkt_info: libc::in_pktinfo = unsafe { mem::zeroed() };
+
         match interface {
-            Interface::Default => self.socket.set_multicast_if_v4(&Ipv4Addr::UNSPECIFIED)?,
-            Interface::Ip(address) => self.socket.set_multicast_if_v4(address)?,
-            Interface::Index(index) => {
-                sock::setsockopt(self.socket.as_raw_fd(), ProtoMulticastIfIndex, index)
-                    .map_err(nix_to_io_error)?
-            }
+            Interface::Default => {}
+            Interface::Ip(address) => pkt_info.ipi_spec_dst = sock::Ipv4Addr::from_std(address).0,
+            Interface::Index(index) => pkt_info.ipi_ifindex = *index as _,
         };
 
-        self.socket
-            .send_to(buf, &SocketAddr::from(self.multicast_address).into())
+        let destination = sock::InetAddr::from_std(&self.multicast_address.into());
+
+        sock::sendmsg(
+            self.socket.as_raw_fd(),
+            &[IoVec::from_slice(&buf)],
+            &[sock::ControlMessage::Ipv4PacketInfo(&pkt_info)],
+            sock::MsgFlags::empty(),
+            Some(&sock::SockAddr::new_inet(destination)),
+        )
+        .map_err(nix_to_io_error)
     }
 
     pub fn broadcast(&self, buf: &[u8]) -> io::Result<()> {
@@ -165,27 +207,5 @@ impl MulticastSocket {
             self.send(buf, &Interface::Ip(*interface))?;
         }
         Ok(())
-    }
-}
-
-#[derive(Clone)]
-struct ProtoMulticastIfIndex;
-
-impl sock::SetSockOpt for ProtoMulticastIfIndex {
-    type Val = u32;
-
-    fn set(&self, fd: RawFd, val: &Self::Val) -> nix::Result<()> {
-        let mut req: libc::ip_mreqn = unsafe { mem::zeroed() };
-        req.imr_ifindex = *val as i32;
-        let result = unsafe {
-            libc::setsockopt(
-                fd,
-                libc::IPPROTO_IP,
-                libc::IP_MULTICAST_IF,
-                &req as *const _ as *const _,
-                mem::size_of_val(&req) as libc::socklen_t,
-            )
-        };
-        nix::errno::Errno::result(result).map(drop)
     }
 }

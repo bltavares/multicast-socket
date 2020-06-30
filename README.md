@@ -32,6 +32,16 @@ The crate is designed with IPv4 in mind because I didn't have a test project to 
 cargo run --example mdns
 ```
 
+## Usage
+
+```toml
+[dependencies]
+multicast-socket = { git = "https://github.com/bltavares/multicast-socket" }
+```
+
+*Why not use a version/publish crates.io*: Currently it is using unpublished version of some packages (git versions), which are not allowed when publishing to crates.io. When the new versions are published, this could also be published.
+
+
 ## License
 
 Licensed under either of
