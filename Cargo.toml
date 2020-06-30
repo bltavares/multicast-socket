@@ -17,15 +17,16 @@ get_if_addrs = '0.5.3'
 version = '0.3.12'
 features = ['reuseport']
 
-[target."cfg(windows)".dependencies.winapi]
+[target.'cfg(windows)'.dependencies.winapi]
 version = '0.3.9'
 features = ['mswsock']
 
-[target."cfg(not(windows))".dependencies.nix]
-# Needs https://github.com/nix-rust/nix/pull/1222 which is unreleased as of today
+[target.'cfg(not(windows))'.dependencies.nix]
+# Needs https://github.com/nix-rust/nix/pull/1265 which is unreleased as of today
 # version = '0.18.0'
-git = "https://github.com/nix-rust/nix"
+git = 'https://github.com/bltavares/nix'
+branch = 'sendmsg-pktinfo-android'
 
-[target."cfg(not(windows))".dependencies.libc]
+[target.'cfg(not(windows))'.dependencies.libc]
 # Needs to be the same as the version used by nix
-git = "https://github.com/rust-lang/libc"
+git = 'https://github.com/rust-lang/libc'
