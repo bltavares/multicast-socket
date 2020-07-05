@@ -3,7 +3,6 @@ use std::mem;
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use std::os::windows::prelude::*;
 use std::ptr;
-use std::time::Duration;
 
 use socket2::{Domain, Protocol, Socket, Type};
 
@@ -131,24 +130,8 @@ fn set_pktinfo(socket: RawSocket, payload: bool) -> io::Result<()> {
     unsafe { setsockopt(socket, IPPROTO_IP, IP_PKTINFO, payload as c_int) }
 }
 
-pub struct MulticastOptions {
-    pub read_timeout: Duration,
-    loopback: bool,
-    buffer_size: usize,
-}
-
-impl Default for MulticastOptions {
-    fn default() -> Self {
-        MulticastOptions {
-            read_timeout: Duration::from_millis(100),
-            loopback: false,
-            buffer_size: 512,
-        }
-    }
-}
-
 fn create_on_interfaces(
-    options: MulticastOptions,
+    options: crate::MulticastOptions,
     interfaces: Vec<Ipv4Addr>,
     multicast_address: SocketAddrV4,
 ) -> io::Result<MulticastSocket> {
@@ -228,7 +211,7 @@ impl MulticastSocket {
     pub fn with_options(
         multicast_address: SocketAddrV4,
         interfaces: Vec<Ipv4Addr>,
-        options: MulticastOptions,
+        options: crate::MulticastOptions,
     ) -> io::Result<Self> {
         create_on_interfaces(options, interfaces, multicast_address)
     }
