@@ -3,6 +3,17 @@ use std::net::SocketAddrV4;
 
 fn main() {
     let mdns_multicast_address = SocketAddrV4::new([224, 0, 0, 251].into(), 5353);
+
+    // Validate that building with options works with the public API
+    let with_options = MulticastSocket::with_options(
+        mdns_multicast_address,
+        multicast_socket::all_ipv4_interfaces().unwrap(),
+        multicast_socket::MulticastOptions {
+            ..Default::default()
+        },
+    );
+    drop(with_options);
+
     let socket = MulticastSocket::all_interfaces(mdns_multicast_address)
         .expect("could not create and bind socket");
 

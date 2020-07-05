@@ -41,6 +41,21 @@ multicast-socket = { git = "https://github.com/bltavares/multicast-socket" }
 
 *Why not use a version/publish crates.io*: Currently it is using unpublished version of some packages (git versions), which are not allowed when publishing to crates.io. When the new versions are published, this could also be published.
 
+## Targets
+
+Main tier:
+
+- x86_64-unknown-linux-gnu
+- x86_64-pc-windows-msvc
+- x86_64-apple-darwin
+
+Cross tier:
+
+- armv7-unknown-linux-gnueabihf
+- aarch64-linux-android
+- mips-unknown-linux-musl
+- x86_64-unknown-linux-musl
+- aarch64-unknown-linux-gnu
 
 ## License
 

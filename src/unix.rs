@@ -2,31 +2,14 @@ use std::io;
 use std::mem;
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use std::os::unix::io::AsRawFd;
-use std::time::Duration;
 
 use socket2::{Domain, Protocol, Socket, Type};
 
 use nix::sys::socket as sock;
 use nix::sys::uio::IoVec;
 
-pub struct MulticastOptions {
-    pub read_timeout: Duration,
-    pub loopback: bool,
-    pub buffer_size: usize,
-}
-
-impl Default for MulticastOptions {
-    fn default() -> Self {
-        MulticastOptions {
-            read_timeout: Duration::from_millis(100),
-            loopback: false,
-            buffer_size: 512,
-        }
-    }
-}
-
 fn create_on_interfaces(
-    options: MulticastOptions,
+    options: crate::MulticastOptions,
     interfaces: Vec<Ipv4Addr>,
     multicast_address: SocketAddrV4,
 ) -> io::Result<MulticastSocket> {
@@ -134,7 +117,7 @@ impl MulticastSocket {
     pub fn with_options(
         multicast_address: SocketAddrV4,
         interfaces: Vec<Ipv4Addr>,
-        options: MulticastOptions,
+        options: crate::MulticastOptions,
     ) -> io::Result<Self> {
         create_on_interfaces(options, interfaces, multicast_address)
     }
