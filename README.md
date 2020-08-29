@@ -36,7 +36,7 @@ cargo run --example mdns
 
 ```toml
 [dependencies]
-multicast-socket = { git = "https://github.com/bltavares/multicast-socket" }
+multicast-socket = "0.1.0"
 ```
 
 *Why not use a version/publish crates.io*: Currently it is using unpublished version of some packages (git versions), which are not allowed when publishing to crates.io. When the new versions are published, this could also be published.
