@@ -11,7 +11,7 @@ license = 'MIT OR Apache-2.0'
 keywords = ['multicast']
 
 [dependencies]
-get_if_addrs = '0.5.3'
+if-addrs = '0.6.0'
 
 [dependencies.socket2]
 version = '0.3.12'
