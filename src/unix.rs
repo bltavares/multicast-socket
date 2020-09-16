@@ -19,6 +19,9 @@ fn create_on_interfaces(
     socket.set_reuse_address(true)?;
     socket.set_reuse_port(true)?;
 
+    // Ipv4PacketInfo translates to `IP_PKTINFO`. Checkout the [ip
+    // manpage](https://man7.org/linux/man-pages/man7/ip.7.html) for more details. In summary
+    // setting this option allows for determining on which interface a packet was received.
     sock::setsockopt(socket.as_raw_fd(), sock::sockopt::Ipv4PacketInfo, &true)
         .map_err(nix_to_io_error)?;
 
