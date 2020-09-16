@@ -95,9 +95,7 @@ pub fn all_ipv4_interfaces() -> io::Result<Vec<Ipv4Addr>> {
     #[cfg(not(target_arch = "mips"))]
     let interfaces = if_addrs::get_if_addrs()?.into_iter();
     #[cfg(target_arch = "mips")]
-    let interfaces = if_addrs::get_if_addrs()?
-        .into_iter()
-        .map(reverse_interface);
+    let interfaces = if_addrs::get_if_addrs()?.into_iter().map(reverse_interface);
 
     let ipv4_interfaces = interfaces
         .filter_map(|i| match i.ip() {
