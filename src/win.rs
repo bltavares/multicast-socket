@@ -157,7 +157,7 @@ fn create_on_interfaces(
 
     // On Windows, unlike all Unix variants, it is improper to bind to the multicast address
     // see https://msdn.microsoft.com/en-us/library/windows/desktop/ms737550(v=vs.85).aspx
-    socket.bind(&SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), multicast_address.port()).into())?;
+    socket.bind(&SocketAddr::new(options.bind_address.into(), multicast_address.port()).into())?;
 
     let interfaces = build_address_table(HashSet::from_iter(interfaces))?;
 
