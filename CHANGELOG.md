@@ -1,3 +1,30 @@
+## 2020-09-19, Version v0.2.0
+### Commits
+- [[`d807ea1941`](https://github.com/bltavares/multicast-socket/commit/d807ea19418005c7410d9c3eee426d284b72ee79)] (cargo-release) version 0.2.0 (Bruno Tavares)
+- [[`5e5cbe6573`](https://github.com/bltavares/multicast-socket/commit/5e5cbe65733af03f0c45226c3de1046d64982eee)] Create a CHANGELOG.md file (Bruno Tavares)
+- [[`297e99f96e`](https://github.com/bltavares/multicast-socket/commit/297e99f96eea320ae6ebfd9bf36cda53e323e083)] Merge pull request #10 from eskimor/rk-make-bind-address-configurable (Bruno Tavares)
+- [[`f810f693b2`](https://github.com/bltavares/multicast-socket/commit/f810f693b2030a19565fe104491c43472dd21e81)] Merge pull request #11 from bltavares/wide-fix-due-to-new-behaviours (Bruno Tavares)
+- [[`e5d43a8a4b`](https://github.com/bltavares/multicast-socket/commit/e5d43a8a4bef8db6fc7bf4071af66950974d016d)] Increase the buffer to fetch the interfaces on windows (Bruno Tavares)
+- [[`e4bcd7b5d3`](https://github.com/bltavares/multicast-socket/commit/e4bcd7b5d36ea6e815c32942adf8bfc5d88e7965)] Fix when the same interface has multiple ips (Bruno Tavares)
+- [[`9d41c523e4`](https://github.com/bltavares/multicast-socket/commit/9d41c523e4c29227d7725de5d273c1f4525d2ae6)] Ensure that the test of the socket options build is being validate (Bruno Tavares)
+- [[`5ec7087244`](https://github.com/bltavares/multicast-socket/commit/5ec7087244d0811cb059f276a85b3e3afeb6ab72)] Make bind address configurable (Robert Klotzner)
+- [[`42893cd05d`](https://github.com/bltavares/multicast-socket/commit/42893cd05df51262d02d585acb21c8a9e90e1c08)] Merge pull request #9 from eskimor/rk-document-IpvPacketInfo (Bruno Tavares)
+- [[`d4e581f966`](https://github.com/bltavares/multicast-socket/commit/d4e581f966c2419cf179742c08181228b3eb7d90)] Document usage of IP_PKTINFO (Robert Klotzner)
+- [[`44a3d55e5c`](https://github.com/bltavares/multicast-socket/commit/44a3d55e5c25d3bb72150a3de42ff6a0af4da85b)] Update README.md (Bruno Tavares)
+
+### Stats
+```diff
+ CHANGELOG.md     | 37 +++++++++++++++++++++++++++++++++++++
+ Cargo.toml       |  4 ++--
+ README.md        |  2 --
+ examples/mdns.rs |  6 ++++--
+ src/lib.rs       |  7 +++++++
+ src/unix.rs      | 32 +++++++++++++++++++-------------
+ src/win.rs       | 17 +++++++++++------
+ 7 files changed, 80 insertions(+), 25 deletions(-)
+```
+
+
 ## 2020-08-29, Version v0.1.0
 ### Commits
 - [[`459a35963b`](https://github.com/bltavares/multicast-socket/commit/459a35963b1957d38da1ab946667de7b15e0890a)] Update the version to released crates (Bruno Tavares)
