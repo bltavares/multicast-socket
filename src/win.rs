@@ -171,13 +171,18 @@ fn create_on_interfaces(
     })
 }
 
-/// Defines a allocation size for the buffer
-/// That seems like a pretty good number for most cases
-/// If things break, we can allocate the buffer a vec and try to double on error
-const MAX_AMOUNT_OF_INTERFACES: usize = 16;
+/// The amount of ip's per interface we can support
+/// This was an increase when I suddenly got 60 different IPs registered on my computer
+/// Let's hope we can keep it like that (or increase it even further)
+const PER_INTERFACE_IP_SUPPORT: usize = 5;
 
 fn build_address_table(interfaces: HashSet<Ipv4Addr>) -> io::Result<HashMap<u32, Ipv4Addr>> {
-    let mut buffer = [0; mem::size_of::<iptypes::IP_ADAPTER_INFO>() * MAX_AMOUNT_OF_INTERFACES];
+    let mut buffer = vec![
+        0;
+        mem::size_of::<iptypes::IP_ADAPTER_INFO>()
+            * interfaces.len()
+            * PER_INTERFACE_IP_SUPPORT
+    ];
     let mut adapter_info = buffer.as_mut_ptr() as iptypes::PIP_ADAPTER_INFO;
     let mut size = buffer.len() as u32;
     let r = unsafe { winapi::um::iphlpapi::GetAdaptersInfo(adapter_info, &mut size) };
