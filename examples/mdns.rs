@@ -7,11 +7,13 @@ fn main() {
     // Validate that building with options works with the public API
     let with_options = MulticastSocket::with_options(
         mdns_multicast_address,
-        multicast_socket::all_ipv4_interfaces().unwrap(),
+        multicast_socket::all_ipv4_interfaces()
+            .expect("could not fetch all interfaces for options"),
         multicast_socket::MulticastOptions {
             ..Default::default()
         },
-    );
+    )
+    .expect("validate that we are starting with options");
     drop(with_options);
 
     let socket = MulticastSocket::all_interfaces(mdns_multicast_address)
