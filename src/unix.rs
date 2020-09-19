@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::io;
 use std::mem;
 use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
@@ -102,13 +103,20 @@ pub fn all_ipv4_interfaces() -> io::Result<Vec<Ipv4Addr>> {
         .into_iter()
         .map(reverse_interface);
 
-    let ipv4_interfaces = interfaces
-        .filter_map(|i| match i.ip() {
-            std::net::IpAddr::V4(v4) if !i.is_loopback() => Some(v4),
-            _ => None,
-        })
-        .collect();
-    Ok(ipv4_interfaces)
+    // We have to filter the same interface if it has multiple ips
+    // https://stackoverflow.com/questions/49819010/ip-add-membership-fails-when-set-both-on-interface-and-its-subinterface-is-that
+    let mut collected_interfaces = HashMap::with_capacity(interfaces.len());
+    for interface in interfaces {
+        if !collected_interfaces.contains_key(&interface.name) {
+            match interface.ip() {
+                std::net::IpAddr::V4(v4) if !interface.is_loopback() => {
+                    collected_interfaces.insert(interface.name, v4);
+                }
+                _ => {}
+            }
+        }
+    }
+    Ok(collected_interfaces.into_iter().map(|(_, ip)| ip).collect())
 }
 
 impl MulticastSocket {
