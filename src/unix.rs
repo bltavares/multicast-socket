@@ -30,12 +30,7 @@ fn create_on_interfaces(
         socket.join_multicast_v4(multicast_address.ip(), &interface)?;
     }
 
-    // On Linux we bind to the multicast address, which causes multicast packets to be filtered
-    #[cfg(any(target_os = "linux", target_os = "android"))]
-    socket.bind(&SocketAddr::from(multicast_address).into())?;
-    // Otherwhise we bind to 0.0.0.0
-    #[cfg(not(any(target_os = "linux", target_os = "android")))]
-    socket.bind(&SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), multicast_address.port()).into())?;
+    socket.bind(&SocketAddr::new(options.bind_address.into(), multicast_address.port()).into())?;
 
     Ok(MulticastSocket {
         socket,
