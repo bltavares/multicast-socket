@@ -14,7 +14,7 @@ keywords = ['multicast']
 get_if_addrs = '0.5.3'
 
 [dependencies.socket2]
-version = '0.3.12'
+version = '0.3.19'
 features = ['reuseport']
 
 [target.'cfg(windows)'.dependencies.winapi]
@@ -22,7 +22,7 @@ version = '0.3.9'
 features = ['mswsock', 'iphlpapi']
 
 [target.'cfg(not(windows))'.dependencies.nix]
-version = '0.18.0'
+version = '0.19.1'
 
 [target.'cfg(not(windows))'.dependencies.libc]
-version = '0.2.76'
+version = '0.2.85'

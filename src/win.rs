@@ -54,7 +54,7 @@ fn locate_wsarecvmsg(socket: RawSocket) -> io::Result<WSARecvMsgExtension> {
         sock::WSAIoctl(
             socket as _,
             SIO_GET_EXTENSION_FUNCTION_POINTER,
-            &mut WSAID_WSARECVMSG as *const _ as *mut _,
+            &WSAID_WSARECVMSG as *const _ as *mut _,
             mem::size_of_val(&WSAID_WSARECVMSG) as DWORD,
             &mut fn_pointer as *const _ as *mut _,
             mem::size_of_val(&fn_pointer) as DWORD,
@@ -101,7 +101,7 @@ fn locate_wsasendmsg(socket: RawSocket) -> io::Result<WSASendMsgExtension> {
         sock::WSAIoctl(
             socket as _,
             SIO_GET_EXTENSION_FUNCTION_POINTER,
-            &mut WSAID_WSASENDMSG as *const _ as *mut _,
+            &WSAID_WSASENDMSG as *const _ as *mut _,
             mem::size_of_val(&WSAID_WSASENDMSG) as DWORD,
             &mut fn_pointer as *const _ as *mut _,
             mem::size_of_val(&fn_pointer) as DWORD,

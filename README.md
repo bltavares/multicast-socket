@@ -36,7 +36,7 @@ cargo run --example mdns
 
 ```toml
 [dependencies]
-multicast-socket = "0.2.0"
+multicast-socket = "0.2.1"
 ```
 
 ## Targets
