@@ -47,14 +47,14 @@ pub struct MulticastSocket {
     buffer_size: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Interface {
     Default,
     Ip(Ipv4Addr),
     Index(i32),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Message {
     pub data: Vec<u8>,
     pub origin_address: SocketAddrV4,
