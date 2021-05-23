@@ -140,7 +140,7 @@ fn create_on_interfaces(
     interfaces: Vec<Ipv4Addr>,
     multicast_address: SocketAddrV4,
 ) -> io::Result<MulticastSocket> {
-    let socket = Socket::new(Domain::ipv4(), Type::dgram(), Some(Protocol::udp()))?;
+    let socket = Socket::new(Domain::IPV4, Type::DGRAM, Some(Protocol::UDP))?;
     socket.set_read_timeout(Some(options.read_timeout))?;
     socket.set_multicast_loop_v4(options.loopback)?;
     socket.set_reuse_address(true)?;
@@ -290,41 +290,35 @@ impl MulticastSocket {
             len: control_buffer.len() as u32,
         };
 
-        let mut origin_address: SOCKADDR = unsafe { mem::zeroed() };
-        let mut wsa_msg = WSAMSG {
-            name: &mut origin_address,
-            namelen: mem::size_of_val(&origin_address) as i32,
-            lpBuffers: &mut data,
-            Control: control,
-            dwBufferCount: 1,
-            dwFlags: 0,
-        };
-
         let mut read_bytes = 0;
-        let r = {
-            unsafe {
-                (self.wsarecvmsg)(
+        let (_, origin_address) = unsafe {
+            socket2::SockAddr::init(|addr_storage, len| {
+                let mut wsa_msg = WSAMSG {
+                    name: addr_storage.cast(),
+                    namelen: *len,
+                    lpBuffers: &mut data,
+                    Control: control,
+                    dwBufferCount: 1,
+                    dwFlags: 0,
+                };
+
+                let r = (self.wsarecvmsg)(
                     self.socket.as_raw_socket() as _,
                     &mut wsa_msg,
                     &mut read_bytes,
                     ptr::null_mut(),
                     None,
-                )
-            }
-        };
+                );
 
-        if r != 0 {
-            return Err(io::Error::last_os_error());
-        }
+                if r != 0 {
+                    Err(io::Error::last_os_error())
+                } else {
+                    Ok(())
+                }
+            })
+        }?;
 
-        let origin_address = unsafe {
-            socket2::SockAddr::from_raw_parts(
-                &origin_address,
-                mem::size_of_val(&origin_address) as i32,
-            )
-        }
-        .as_std();
-
+        let origin_address = origin_address.as_socket();
         let origin_address = match origin_address {
             Some(SocketAddr::V4(v4)) => v4,
             _ => SocketAddrV4::new(Ipv4Addr::UNSPECIFIED, 0),
