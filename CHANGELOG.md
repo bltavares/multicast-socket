@@ -1,3 +1,18 @@
+## 2021-05-23, Version v0.2.2
+### Commits
+- [[`2a8c9309e9`](https://github.com/bltavares/multicast-socket/commit/2a8c9309e924513b0c6f44ade2d03382ed89ff6f)] (cargo-release) version 0.2.2 (Bruno Tavares)
+- [[`788fce1b2a`](https://github.com/bltavares/multicast-socket/commit/788fce1b2a84f4ef0e9f88929a5056e4402c5775)] Merge pull request #12 from bltavares/clone-messages (Bruno Tavares)
+- [[`e10da8fc14`](https://github.com/bltavares/multicast-socket/commit/e10da8fc14b43904b62b3fa6ad42a4f773bef574)] Make Messages clone (Bruno Tavares)
+
+### Stats
+```diff
+ Cargo.toml  | 2 +-
+ src/unix.rs | 4 ++--
+ src/win.rs  | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+```
+
+
 ## 2020-09-19, Version v0.2.0
 ### Commits
 - [[`d807ea1941`](https://github.com/bltavares/multicast-socket/commit/d807ea19418005c7410d9c3eee426d284b72ee79)] (cargo-release) version 0.2.0 (Bruno Tavares)
