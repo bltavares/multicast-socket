@@ -15,7 +15,7 @@ fn create_on_interfaces(
     multicast_address: SocketAddrV4,
 ) -> io::Result<MulticastSocket> {
     let socket = Socket::new(Domain::ipv4(), Type::dgram(), Some(Protocol::udp()))?;
-    socket.set_read_timeout(Some(options.read_timeout))?;
+    socket.set_read_timeout(options.read_timeout)?;
     socket.set_multicast_loop_v4(options.loopback)?;
     socket.set_reuse_address(true)?;
     socket.set_reuse_port(true)?;
