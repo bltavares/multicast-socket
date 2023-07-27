@@ -12,7 +12,10 @@ mod unix;
 pub use unix::*;
 
 pub struct MulticastOptions {
-    pub read_timeout: Duration,
+    /// The maximal timeout before [`MulticastSocket::receive`] returns.
+    ///
+    /// If this is `None`, [`MulticastSocket::receive`] will block until there is data to read.
+    pub read_timeout: Option<Duration>,
     pub loopback: bool,
     pub buffer_size: usize,
     /// The address to bind the socket to.
@@ -25,7 +28,7 @@ pub struct MulticastOptions {
 impl Default for MulticastOptions {
     fn default() -> Self {
         MulticastOptions {
-            read_timeout: Duration::from_secs(1),
+            read_timeout: Some(Duration::from_secs(1)),
             loopback: true,
             buffer_size: 512,
             bind_address: Ipv4Addr::UNSPECIFIED,
