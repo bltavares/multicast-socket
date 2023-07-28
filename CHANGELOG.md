@@ -1,3 +1,21 @@
+## 2023-07-27, Version v0.3.0
+### Commits
+- [[`706d4135f9`](https://github.com/bltavares/multicast-socket/commit/706d4135f9c1609b33dea8becbba5ba8bb1e30aa)] chore: Release multicast-socket version 0.3.0 (Bruno Tavares)
+- [[`a82567ea2d`](https://github.com/bltavares/multicast-socket/commit/a82567ea2dbb216c776e09a81120e540ddbe8c90)] Merge pull request #15 from Rayzeq/master (Bruno Tavares)
+- [[`fa21881d65`](https://github.com/bltavares/multicast-socket/commit/fa21881d65c8408f4ded74a0c37d25104171e6f7)] Permit making blocking sockets (Rayzeq)
+- [[`dc1868da99`](https://github.com/bltavares/multicast-socket/commit/dc1868da991dc30254f7750f9a91c093edf95d5d)] Update changelog (Bruno Tavares)
+
+### Stats
+```diff
+ CHANGELOG.md | 15 +++++++++++++++
+ Cargo.toml   |  2 +-
+ src/lib.rs   |  7 +++++--
+ src/unix.rs  |  2 +-
+ src/win.rs   |  2 +-
+ 5 files changed, 23 insertions(+), 5 deletions(-)
+```
+
+
 ## 2021-05-23, Version v0.2.2
 ### Commits
 - [[`2a8c9309e9`](https://github.com/bltavares/multicast-socket/commit/2a8c9309e924513b0c6f44ade2d03382ed89ff6f)] (cargo-release) version 0.2.2 (Bruno Tavares)
