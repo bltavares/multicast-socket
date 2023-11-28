@@ -373,8 +373,8 @@ impl MulticastSocket {
             len: buf.len() as _,
         };
 
+        let mut control_buffer = [0; CONTROL_PKTINFO_BUFFER_SIZE];
         let control = if let Some(pkt_info) = pkt_info {
-            let mut control_buffer = [0; CONTROL_PKTINFO_BUFFER_SIZE];
             let hdr = CMSGHDR {
                 cmsg_len: CONTROL_PKTINFO_BUFFER_SIZE,
                 cmsg_level: IPPROTO_IP,
