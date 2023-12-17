@@ -179,8 +179,7 @@ fn build_address_table(interfaces: HashSet<Ipv4Addr>) -> io::Result<HashMap<u32,
         return Err(io::Error::last_os_error());
     }
 
-    let mut buffer =
-        vec![0; mem::size_of::<iptypes::IP_ADAPTER_INFO>() * interfaces.len() * (size as usize)];
+    let mut buffer = vec![0; mem::size_of::<iptypes::IP_ADAPTER_INFO>() * (size as usize)];
     let mut adapter_info = buffer.as_mut_ptr() as iptypes::PIP_ADAPTER_INFO;
     let mut size = buffer.len() as u32;
     let r = unsafe { winapi::um::iphlpapi::GetAdaptersInfo(adapter_info, &mut size) };
