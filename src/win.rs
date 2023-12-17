@@ -14,6 +14,7 @@ use winapi::ctypes::{c_char, c_int};
 use winapi::shared::inaddr::*;
 use winapi::shared::minwindef::DWORD;
 use winapi::shared::minwindef::{INT, LPDWORD};
+use winapi::shared::winerror::ERROR_BUFFER_OVERFLOW;
 use winapi::shared::ws2def::LPWSAMSG;
 use winapi::shared::ws2def::*;
 use winapi::shared::ws2ipdef::*;
@@ -171,18 +172,15 @@ fn create_on_interfaces(
     })
 }
 
-/// The amount of ip's per interface we can support
-/// This was an increase when I suddenly got 60 different IPs registered on my computer
-/// Let's hope we can keep it like that (or increase it even further)
-const PER_INTERFACE_IP_SUPPORT: usize = 5;
-
 fn build_address_table(interfaces: HashSet<Ipv4Addr>) -> io::Result<HashMap<u32, Ipv4Addr>> {
-    let mut buffer = vec![
-        0;
-        mem::size_of::<iptypes::IP_ADAPTER_INFO>()
-            * interfaces.len()
-            * PER_INTERFACE_IP_SUPPORT
-    ];
+    let mut size = 0u32;
+    let r = unsafe { winapi::um::iphlpapi::GetAdaptersInfo(ptr::null_mut(), &mut size) };
+    if r != ERROR_BUFFER_OVERFLOW {
+        return Err(io::Error::last_os_error());
+    }
+
+    let mut buffer =
+        vec![0; mem::size_of::<iptypes::IP_ADAPTER_INFO>() * interfaces.len() * (size as usize)];
     let mut adapter_info = buffer.as_mut_ptr() as iptypes::PIP_ADAPTER_INFO;
     let mut size = buffer.len() as u32;
     let r = unsafe { winapi::um::iphlpapi::GetAdaptersInfo(adapter_info, &mut size) };
