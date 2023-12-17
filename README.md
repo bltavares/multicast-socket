@@ -3,10 +3,10 @@
 Single-socket to network across multiple interfaces
 
 <a href="https://github.com/bltavares/multicast-socket/actions?query=workflow%3AQuickstart+branch%3Amaster">
-    <img src="https://img.shields.io/github/workflow/status/bltavares/multicast-socket/Quickstart/master?label=main%20ci" />
+    <img src="https://img.shields.io/github/actions/workflow/status/bltavares/multicast-socket/main.yml?branch=master" />
 </a>
 <a href="https://github.com/bltavares/multicast-socket/actions?query=workflow%3ACross-compile+branch%3Amaster">
-    <img src="https://img.shields.io/github/workflow/status/bltavares/multicast-socket/Cross-compile/master?label=cross%20ci" />
+    <img src="https://img.shields.io/github/actions/workflow/status/bltavares/multicast-socket/main.yml?branch=master" />
 </a>
 <a href="https://crates.io/crates/multicast-socket">
     <img src="https://img.shields.io/crates/v/multicast-socket.svg" />
