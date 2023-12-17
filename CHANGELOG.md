@@ -14,6 +14,22 @@
 ```
 
 
+## 2023-12-17, Version v0.3.1
+### Commits
+- [[`84f8fd3e13`](https://github.com/bltavares/multicast-socket/commit/84f8fd3e13e505b35d9b45a199fd2a2b69a88379)] chore: Release multicast-socket version 0.3.1 (Bruno Tavares)
+- [[`7db7ac811a`](https://github.com/bltavares/multicast-socket/commit/7db7ac811a46a475135e028fd0f94f6fc5bba61a)] Merge pull request #16 from mon/fix-scope (Bruno Tavares)
+- [[`5eca9a8b3d`](https://github.com/bltavares/multicast-socket/commit/5eca9a8b3defab802715ca8367739ff3955fba7d)] Fix crash in release mode for mdns example (Will Toohey)
+- [[`787107b904`](https://github.com/bltavares/multicast-socket/commit/787107b90442855bb153e61d1608f052f6b752c5)] Update the changelog (Bruno Tavares)
+
+### Stats
+```diff
+ CHANGELOG.md | 18 ++++++++++++++++++
+ Cargo.toml   |  2 +-
+ src/win.rs   |  2 +-
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+```
+
+
 ## 2023-07-27, Version v0.3.0
 ### Commits
 - [[`706d4135f9`](https://github.com/bltavares/multicast-socket/commit/706d4135f9c1609b33dea8becbba5ba8bb1e30aa)] chore: Release multicast-socket version 0.3.0 (Bruno Tavares)
