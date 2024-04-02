@@ -61,42 +61,8 @@ pub struct Message {
     pub interface: Interface,
 }
 
-/// The crate `get_if_addrs` is reading the bytes of sockets on the wrong endianess on MIPS
-/// So the adresses are reversed...
-/// The crate `get_if_addrs` is archived and I don't have bandwidth to fork it
-/// So this is a hotfix
-#[cfg(target_arch = "mips")]
-fn reverse_interface(interface: get_if_addrs::Interface) -> get_if_addrs::Interface {
-    get_if_addrs::Interface {
-        name: interface.name,
-        addr: match interface.addr {
-            get_if_addrs::IfAddr::V4(v4) => {
-                let reversed = get_if_addrs::Ifv4Addr {
-                    ip: reverse_address(v4.ip),
-                    netmask: reverse_address(v4.netmask),
-                    broadcast: v4.broadcast.map(reverse_address),
-                };
-                get_if_addrs::IfAddr::V4(reversed)
-            }
-            addr => addr,
-        },
-    }
-}
-
-#[cfg(target_arch = "mips")]
-fn reverse_address(v4: Ipv4Addr) -> Ipv4Addr {
-    let mut octets = v4.octets();
-    octets.reverse();
-    octets.into()
-}
-
 pub fn all_ipv4_interfaces() -> io::Result<Vec<Ipv4Addr>> {
-    #[cfg(not(target_arch = "mips"))]
-    let interfaces = get_if_addrs::get_if_addrs()?.into_iter();
-    #[cfg(target_arch = "mips")]
-    let interfaces = get_if_addrs::get_if_addrs()?
-        .into_iter()
-        .map(reverse_interface);
+    let interfaces = if_addrs::get_if_addrs()?.into_iter();
 
     // We have to filter the same interface if it has multiple ips
     // https://stackoverflow.com/questions/49819010/ip-add-membership-fails-when-set-both-on-interface-and-its-subinterface-is-that
