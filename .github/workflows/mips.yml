@@ -1,0 +1,28 @@
+# Since Rust 1.72+ MIPS is a Tier 3 platform, and there are many errors on the latest nightly to use -Z build-std.
+# So we pin it to 1.71 to produce valid targets
+# Ref: https://github.com/rust-lang/compiler-team/issues/648
+
+on: [push, pull_request]
+
+name: Cross-compile MIPS
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - mips-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.71
+          target: ${{ matrix.target }}
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --target=${{ matrix.target }} --examples
