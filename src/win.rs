@@ -248,7 +248,7 @@ const PKTINFO_DATA_SIZE: usize = mem::size_of::<IN_PKTINFO>();
 const CONTROL_PKTINFO_BUFFER_SIZE: usize = CMSG_HEADER_SIZE + PKTINFO_DATA_SIZE;
 
 pub fn all_ipv4_interfaces() -> io::Result<Vec<Ipv4Addr>> {
-    let interfaces = get_if_addrs::get_if_addrs()?
+    let interfaces = if_addrs::get_if_addrs()?
         .into_iter()
         .filter_map(|i| match i.ip() {
             std::net::IpAddr::V4(v4) => Some(v4),
