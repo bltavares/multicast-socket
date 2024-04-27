@@ -1,3 +1,26 @@
+## 2024-04-27, Version v0.3.3
+### Commits
+- [[`3d8a82bbb3`](https://github.com/bltavares/multicast-socket/commit/3d8a82bbb3a06632ec2cd23476148f953cd9a934)] chore: Release multicast-socket version 0.3.3 (Bruno Tavares)
+- [[`3d1a678480`](https://github.com/bltavares/multicast-socket/commit/3d1a6784804aa8b8b3eec4de38d7745865e8e32d)] Merge pull request #22 from bltavares/refactor-ci-due-to-upstream-changes (Bruno Tavares)
+- [[`8b388b03bc`](https://github.com/bltavares/multicast-socket/commit/8b388b03bcbda04c27b6497e6891a9cb6f011665)] Pin android build to a suposedly working image (Bruno Tavares)
+- [[`02ea1b0f62`](https://github.com/bltavares/multicast-socket/commit/02ea1b0f6296c3f1caba665f6f9b53e471c26019)] Refactor PR CI (Bruno Tavares)
+- [[`580beaae67`](https://github.com/bltavares/multicast-socket/commit/580beaae6779ab3e82370bedd6d417fd8cfc2e2f)] Merge pull request #19 from mon/new-if-addrs (Bruno Tavares)
+- [[`8107217a0c`](https://github.com/bltavares/multicast-socket/commit/8107217a0cd2dabc95bb77e8e63abb5c972533f8)] Move to maintained `if-addrs` crate (Will Toohey)
+- [[`0504098b0d`](https://github.com/bltavares/multicast-socket/commit/0504098b0d313497cae1e4bd02d84dada77473f7)] Fix badges to CI (Bruno Tavares)
+
+### Stats
+```diff
+ .github/workflows/android.yml       | 30 ++++++++++++++++++++++++++++++
+ .github/workflows/cross_compile.yml |  2 --
+ .github/workflows/mips.yml          | 28 ++++++++++++++++++++++++++++
+ Cargo.toml                          |  4 ++--
+ README.md                           |  4 ++--
+ src/unix.rs                         | 36 +-----------------------------------
+ src/win.rs                          |  2 +-
+ 7 files changed, 64 insertions(+), 42 deletions(-)
+```
+
+
 ## 2023-12-17, Version v0.3.1
 ### Commits
 - [[`84f8fd3e13`](https://github.com/bltavares/multicast-socket/commit/84f8fd3e13e505b35d9b45a199fd2a2b69a88379)] chore: Release multicast-socket version 0.3.1 (Bruno Tavares)
